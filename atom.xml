@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>程序员大魔王</title>
   
-  
+  <subtitle>程序员大魔王</subtitle>
   <link href="https://brucewong96.github.io/atom.xml" rel="self"/>
   
   <link href="https://brucewong96.github.io/"/>
