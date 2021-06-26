@@ -429,8 +429,8 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-26/1624694497803-flink-home-graphic.png" alt="Flink"></p>
-<h5 id="什么是-WordCount-？"><a href="#什么是-WordCount-？" class="headerlink" title="什么是 WordCount ？"></a>什么是 WordCount ？</h5><p>wordcount 简单来讲就是单词计数，是一般大数据计算框架（Hadoop、Spark、Flink）的入门学习案例，相当于编程语言（Java、Python）中的 HelloWorld 案例，适合刚开始了解 Flink 作业提交流程的同学。</p>
-<h5 id="环境要求"><a href="#环境要求" class="headerlink" title="环境要求"></a>环境要求</h5><ol>
+<h4 id="什么是-WordCount-？"><a href="#什么是-WordCount-？" class="headerlink" title="什么是 WordCount ？"></a>什么是 WordCount ？</h4><p>wordcount 简单来讲就是单词计数，是一般大数据计算框架（Hadoop、Spark、Flink）的入门学习案例，相当于编程语言（Java、Python）中的 HelloWorld 案例，适合刚开始了解 Flink 作业提交流程的同学。</p>
+<h4 id="环境要求"><a href="#环境要求" class="headerlink" title="环境要求"></a>环境要求</h4><ol>
 <li>JDK 1.8 (必须)</li>
 </ol>
 <pre class="line-numbers language-linux" data-language="linux"><code class="language-linux">~  $ java -version
@@ -477,7 +477,7 @@ drwxr-xr-x@ <span class="token number">13</span> it  staff        <span class="t
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">~/flink-dev/flink-1.12.1  $ flink --version
 Version: <span class="token number">1.12</span>.1, Commit ID: dc404e2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>如上显示，则表示安装成功。</p>
-<h5 id="启动集群"><a href="#启动集群" class="headerlink" title="启动集群"></a>启动集群</h5><p>学过 一些 Java 的用户应该了解，启动集群脚本一般在 bin 目录下</p>
+<h4 id="启动集群"><a href="#启动集群" class="headerlink" title="启动集群"></a>启动集群</h4><p>学过 一些 Java 的用户应该了解，启动集群脚本一般在 bin 目录下</p>
 <p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-18/1623976416741-image.png" alt="bin 目录下的脚本"></p>
 <ul>
 <li>执行启动集群命令<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">~/flink-dev/flink-1.12.1/bin  $ ./start-cluster.sh
@@ -488,7 +488,7 @@ Starting taskexecutor daemon on <span class="token function">host</span> MacBook
 <p>– 访问 Flink webUI 界面 (localhost:8081)</p>
 <p>如果输入地址后可以看到以下页面，表示集群启动成功。<br><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-18/1623976909945-image.png" alt="输入地址"></p>
 <p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-18/1623976953750-image.png" alt="web UI"></p>
-<h5 id="编写-wordcount-项目"><a href="#编写-wordcount-项目" class="headerlink" title="编写 wordcount 项目"></a>编写 wordcount 项目</h5><p>Flink 本地启动了一个集群，接下来就是提交我们的任务，任务使用 Java 语言调用 Flink 的 api 来编写。</p>
+<h4 id="编写-wordcount-项目"><a href="#编写-wordcount-项目" class="headerlink" title="编写 wordcount 项目"></a>编写 wordcount 项目</h4><p>Flink 本地启动了一个集群，接下来就是提交我们的任务，任务使用 Java 语言调用 Flink 的 api 来编写。</p>
 <ul>
 <li>创建项目<br><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-18/1624006853454-WeChat0292626db4546a6b740b2b0bdc12c3a3-min.png" alt="New Project"></li>
 </ul>
@@ -649,10 +649,7 @@ public class WordCount {
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">nc</span> -l <span class="token number">10000</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>注意，这里窗口会阻塞</p>
-<ul>
-<li>提交任务</li>
-</ul>
-<p>进入如下目录</p>
+<h4 id="提交任务"><a href="#提交任务" class="headerlink" title="提交任务"></a>提交任务</h4><p>进入如下目录</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">~/flink-dev/flink-1.12.1/bin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>执行提交命令 (jar 包路径最好用绝对路径)</p>
@@ -667,11 +664,8 @@ public class WordCount {
 <li>输入数据</li>
 </ul>
 <p>在阻塞窗口中输入一些单词，回车就会被发送出去。<br><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-18/1624010294222-image.png" alt="输入数据"></p>
-<ul>
-<li>查看任务日志</li>
-</ul>
-<p>Task Manager 里面查看日志，如图则表示统计成功。<br><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-18/1624010394704-image.png" alt="查看日志"></p>
-<p>附录：完整代码已经放在 github</p>
+<h4 id="查看任务日志"><a href="#查看任务日志" class="headerlink" title="查看任务日志"></a>查看任务日志</h4><p>Task Manager 里面查看日志，如图则表示统计成功。<br><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-18/1624010394704-image.png" alt="查看日志"></p>
+<h4 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h4><p>完整代码已经放在 github</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/BruceWong96/Flink-Guide">https://github.com/BruceWong96/Flink-Guide</a></p>
 
                 
