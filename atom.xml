@@ -6,7 +6,7 @@
   <link href="https://brucewong96.github.io/atom.xml" rel="self"/>
   
   <link href="https://brucewong96.github.io/"/>
-  <updated>2021-06-26T08:02:12.117Z</updated>
+  <updated>2021-06-26T08:04:52.151Z</updated>
   <id>https://brucewong96.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>\[Flink 实践篇\-1\] Flink 1.12.1 实现 WordCount 入门案例</title>
+    <title>[Flink 实践篇-1] Flink 1.12.1 实现 WordCount 入门案例</title>
     <link href="https://brucewong96.github.io/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/"/>
     <id>https://brucewong96.github.io/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/</id>
     <published>2021-06-26T07:56:59.000Z</published>
-    <updated>2021-06-26T08:02:12.117Z</updated>
+    <updated>2021-06-26T08:04:52.151Z</updated>
     
     
       
