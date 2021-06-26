@@ -6,7 +6,7 @@
   <link href="https://brucewong96.github.io/atom.xml" rel="self"/>
   
   <link href="https://brucewong96.github.io/"/>
-  <updated>2021-06-24T08:47:28.843Z</updated>
+  <updated>2021-06-26T08:02:12.117Z</updated>
   <id>https://brucewong96.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>\[Flink 实践篇\-1\] Flink 1.12.1 实现 WordCount 入门案例</title>
+    <link href="https://brucewong96.github.io/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/"/>
+    <id>https://brucewong96.github.io/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/</id>
+    <published>2021-06-26T07:56:59.000Z</published>
+    <updated>2021-06-26T08:02:12.117Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h4 id=&quot;Flink-实践篇-1-Flink-1-12-1-实现-WordCount-入门案例&quot;&gt;&lt;a href=&quot;#Flink-实践篇-1-Flink-1-12-1-实现-WordCount-入门案例&quot; class=&quot;headerlink&quot; title=&quot;[Flink</summary>
+        
+      
+    
+    
+    
+    <category term="Flink 实践篇" scheme="https://brucewong96.github.io/categories/Flink-%E5%AE%9E%E8%B7%B5%E7%AF%87/"/>
+    
+    
+    <category term="Flink" scheme="https://brucewong96.github.io/tags/Flink/"/>
+    
+    <category term="入门" scheme="https://brucewong96.github.io/tags/%E5%85%A5%E9%97%A8/"/>
+    
+    <category term="实时计算" scheme="https://brucewong96.github.io/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
+    
+  </entry>
   
   <entry>
     <title>Hello World</title>
