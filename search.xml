@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title></title>
+      <link href="/2021/06/28/yun-yuan-sheng-shu-ju-zhong-tai-du-shu-bi-ji/"/>
+      <url>/2021/06/28/yun-yuan-sheng-shu-ju-zhong-tai-du-shu-bi-ji/</url>
+      
+        <content type="html"><![CDATA[<h3 id="《云原生数据中台》读书笔记"><a href="#《云原生数据中台》读书笔记" class="headerlink" title="《云原生数据中台》读书笔记"></a>《云原生数据中台》读书笔记</h3><p>大数据源于硅谷，国内数据中台的概念源于阿里巴巴，虽然硅谷没有“数据中台”的叫法，但硅谷的公司早已形成了中台的意识（来源于避免重复造轮子，快速迭代，数据驱动，业务驱动的工程师文化理念）。</p><h4 id="数据中台的思路"><a href="#数据中台的思路" class="headerlink" title="数据中台的思路"></a>数据中台的思路</h4><p>中台提供数据能力的共享和复用，前端业务部门可以快速获得全局的数据洞见及现成的数据工具，快速推出由数据支持的产品。</p><h4 id="数据中台要解决的问题"><a href="#数据中台要解决的问题" class="headerlink" title="数据中台要解决的问题"></a>数据中台要解决的问题</h4><ul><li>各个部门重复开发数据，浪费存储与计算资源；</li><li>数据标准不统一，数据使用成本高；</li><li>业务数据孤岛问题严重，数据利用率低。</li></ul><p>数据规范：连接生产数据的业务部门与消费数据的分析部门的桥梁。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>[Flink 实践篇-1] Flink 1.12.1 实现 WordCount 入门案例</title>
       <link href="/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/"/>
       <url>/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/</url>
