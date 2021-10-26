@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="程序员大魔王">
+    <meta name="keywords" content="[Flink 源码篇-1] Flink 1.12 命令行提交 Job 是怎么执行的, 程序员大魔王">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>程序员大魔王</title>
+    <title>[Flink 源码篇-1] Flink 1.12 命令行提交 Job 是怎么执行的 | 程序员大魔王</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -250,12 +250,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://gitee.com/brucewong96/picture0/raw/master/2021-10-26/1635259498061-image.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">[Flink 源码篇-1] Flink 1.12 命令行提交 Job 是怎么执行的</h1>
                 </div>
             </div>
         </div>
@@ -369,12 +369,33 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Flink/">
+                                <span class="chip bg-color">Flink</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%BA%90%E7%A0%81/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/">
+                                <span class="chip bg-color">实时计算</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Flink-%E6%BA%90%E7%A0%81%E7%AF%87/" class="post-category">
+                                Flink 源码篇
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -383,7 +404,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-06-28
+                    2021-10-26
                 </div>
                 
 
@@ -407,14 +428,265 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="《云原生数据中台》读书笔记"><a href="#《云原生数据中台》读书笔记" class="headerlink" title="《云原生数据中台》读书笔记"></a>《云原生数据中台》读书笔记</h3><p>大数据源于硅谷，国内数据中台的概念源于阿里巴巴，虽然硅谷没有“数据中台”的叫法，但硅谷的公司早已形成了中台的意识（来源于避免重复造轮子，快速迭代，数据驱动，业务驱动的工程师文化理念）。</p>
-<h4 id="数据中台的思路"><a href="#数据中台的思路" class="headerlink" title="数据中台的思路"></a>数据中台的思路</h4><p>中台提供数据能力的共享和复用，前端业务部门可以快速获得全局的数据洞见及现成的数据工具，快速推出由数据支持的产品。</p>
-<h4 id="数据中台要解决的问题"><a href="#数据中台要解决的问题" class="headerlink" title="数据中台要解决的问题"></a>数据中台要解决的问题</h4><ul>
-<li>各个部门重复开发数据，浪费存储与计算资源；</li>
-<li>数据标准不统一，数据使用成本高；</li>
-<li>业务数据孤岛问题严重，数据利用率低。</li>
-</ul>
-<p>数据规范：连接生产数据的业务部门与消费数据的分析部门的桥梁。</p>
+                <p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-10-26/1635259498061-image.png" alt="Flink"></p>
+<p>本文主要介绍 on yarn 模式下从命令行提交任务的执行流程，从运行 run 到执行用户程序的 main() 函数，由于转换为 JobGraph 的流程十分复杂，所以放到另一篇文章单独写。</p>
+<h3 id="启动命令"><a href="#启动命令" class="headerlink" title="启动命令"></a>启动命令</h3><p>用户通过 DataStream API 构建 Flink 应用程序之后，下一步就是将构建好的 JAR 包提交到集群中运行，整个过程涉及客户端和集群运行时之间的交互。</p>
+<p>提交代码如下</p>
+<pre class="line-numbers language-SQL" data-language="SQL"><code class="language-SQL">${FLINK_HOME}/bin/flink run application.jar<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<h3 id="启动脚本追溯"><a href="#启动脚本追溯" class="headerlink" title="启动脚本追溯"></a>启动脚本追溯</h3><p>脚本最后一行</p>
+<pre class="line-numbers language-SQL" data-language="SQL"><code class="language-SQL"># Add HADOOP_CLASSPATH to allow the usage of Hadoop file systems
+exec $JAVA_RUN $JVM_ARGS $FLINK_ENV_JAVA_OPTS "${log_setting[@]}" -classpath "`manglePathList "$CC_CLASSPATH:$INTERNAL_HADOOP_CLASSPATHS"`" org.apache.flink.client.cli.CliFrontend "$@"
+
+# "$@" 表示将传递给脚本的所有参数 传递给 CliFrontend
+# 所以 CliFrontend 就是 入口<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="源代码溯源"><a href="#源代码溯源" class="headerlink" title="源代码溯源"></a>源代码溯源</h3><p>从脚本中的路径可以看出这个类在 <code>flink-clients</code> 模块，<code>CliFrontend</code> 类的主函数如下，从主函数来看整个提交流程。</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">public static void main(final String[] args) {
+    EnvironmentInformation.logEnvironmentInfo(LOG, "Command Line Client", args);
+
+    // 1. find the configuration directory
+    // 这一步主要是找到 配置文件 目录，如果没有指定则使用默认，主要是提供给第 2 步（加载配置）用
+    final String configurationDirectory = getConfigurationDirectoryFromEnv();
+
+    // 2. load the global configuration
+    // 根据第一步的配置目录加载全局配置
+    final Configuration configuration =
+            GlobalConfiguration.loadConfiguration(configurationDirectory);
+
+    // 3. load the custom command lines
+    // 加载自定义的命令
+    final List&lt;CustomCommandLine&gt; customCommandLines =
+            loadCustomCommandLines(configuration, configurationDirectory);
+
+    int retCode = 31;
+    try {
+        final CliFrontend cli = new CliFrontend(configuration, customCommandLines);
+
+        SecurityUtils.install(new SecurityConfiguration(cli.configuration));
+        // 解析命令行并开始请求
+        // 判断是否有 hadoop 权限安全控制走对应的 doas(), 具体执行逻辑为 cli.parseAndRun(args) 解析对应的用户参数
+        retCode = SecurityUtils.getInstalledContext().runSecured(() -&gt; cli.parseAndRun(args));
+    } catch (Throwable t) {
+        final Throwable strippedThrowable =
+                ExceptionUtils.stripException(t, UndeclaredThrowableException.class);
+        LOG.error("Fatal error while running command line interface.", strippedThrowable);
+        strippedThrowable.printStackTrace();
+    } finally {
+        System.exit(retCode);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>接着 <code>cli.parseAndRun(args)</code> 继续看逻辑</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java"> /**
+ * Parses the command line arguments and starts the requested action.
+ *
+ * @param args command line arguments of the client.
+ * @return The return code of the program
+ */
+public int parseAndRun(String[] args) { // args 为脚本启动后面的参数
+
+    // check for action
+    if (args.length &lt; 1) {
+        CliFrontendParser.printHelp(customCommandLines);
+        System.out.println("Please specify an action.");
+        return 1;
+    }
+
+    // get action
+    // 这里的 action 是 run
+    String action = args[0];
+
+    // remove action from parameters
+    // 去除 run 之后剩下的参数
+    final String[] params = Arrays.copyOfRange(args, 1, args.length);
+
+    try {
+        // do action
+        // 判断 action
+        switch (action) {
+            case ACTION_RUN:   // private static final String ACTION_RUN = "run";  // 常量 run
+                run(params);   // 所以直接执行 run(params) 
+                return 0;
+            case ACTION_RUN_APPLICATION:
+                runApplication(params);
+                return 0;
+            case ACTION_LIST:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>接着<code>run(params);</code> 继续看逻辑</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">protected void run(String[] args) throws Exception {
+    LOG.info("Running 'run' command.");
+
+    // 这个 CliFrontendParser 包含所有命令的 option，如下图 flink -h 显示的所有选项
+    final Options commandOptions = CliFrontendParser.getRunCommandOptions();
+    
+    // 解析对应的参数
+    final CommandLine commandLine = getCommandLine(commandOptions, args, true);
+
+    // evaluate help flag
+    // 判断为 help 的时候 打印出所有的 run 所需的 options
+    if (commandLine.hasOption(HELP_OPTION.getOpt())) {
+        CliFrontendParser.printHelpForRun(customCommandLines);
+        return;
+    }
+
+    // 先判空，然后获取所有 active 命令
+    final CustomCommandLine activeCommandLine =
+            validateAndGetActiveCommandLine(checkNotNull(commandLine));
+
+    final ProgramOptions programOptions = ProgramOptions.create(commandLine);
+
+    // 获取 job jars 和依赖的 libraries
+    final List&lt;URL&gt; jobJars = getJobJarAndDependencies(programOptions);
+    
+    // 经过上述几个步骤 拿到最终生效的配置
+    final Configuration effectiveConfiguration =
+            getEffectiveConfiguration(activeCommandLine, commandLine, programOptions, jobJars);
+
+    LOG.debug("Effective executor configuration: {}", effectiveConfiguration);
+     
+    // 根据上面得到的配置，先打包 program，然后 execute
+    try (PackagedProgram program = getPackagedProgram(programOptions, effectiveConfiguration)) {
+        executeProgram(effectiveConfiguration, program);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接着 <code>getPackagedProgram(programOptions, effectiveConfiguration)</code> 继续看逻辑</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">//这个函数里基本逻辑就下面这一句
+program = buildProgram(programOptions, effectiveConfiguration);
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<p>接着 <code>buildProgram(programOptions, effectiveConfiguration)</code>继续看逻辑</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">/**
+ * Creates a Packaged program from the given command line options and the
+ * effectiveConfiguration.
+ *
+ * @return A PackagedProgram (upon success) 返回值
+ */
+PackagedProgram buildProgram(final ProgramOptions runOptions, final Configuration configuration)
+        throws FileNotFoundException, ProgramInvocationException, CliArgsException {
+    runOptions.validate();
+    
+    // 传入程序内部的参数
+    String[] programArgs = runOptions.getProgramArgs();
+    // jar 路径
+    String jarFilePath = runOptions.getJarFilePath();
+    List&lt;URL&gt; classpaths = runOptions.getClasspaths();
+
+    // Get assembler class
+    // 入口类名
+    String entryPointClass = runOptions.getEntryPointClassName();
+    File jarFile = jarFilePath != null ? getJarFile(jarFilePath) : null;
+
+    return PackagedProgram.newBuilder()
+            .setJarFile(jarFile)
+            .setUserClassPaths(classpaths)
+            .setEntryPointClassName(entryPointClass)
+            .setConfiguration(configuration)
+            .setSavepointRestoreSettings(runOptions.getSavepointRestoreSettings())
+            .setArguments(programArgs)
+            .build();  // build 触发构建, 这里可以看出 PackagedProgram 用到了 Builder Pattern（建造者模式）
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>接着 <code>.build();</code> 继续看逻辑</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">public PackagedProgram build() throws ProgramInvocationException {
+    if (jarFile == null &amp;&amp; entryPointClassName == null) {
+        throw new IllegalArgumentException(
+                "The jarFile and entryPointClassName can not be null at the same time.");
+    }
+    // 这里会返回一个 PackagedProgram
+    // 这里其实就是拿到了 入口运行类 的全额限定名，然后通过类加载器加载运行主类
+    return new PackagedProgram(
+            jarFile,
+            userClassPaths,
+            entryPointClassName,
+            configuration,
+            savepointRestoreSettings,
+            args);
+}
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>其中，加载运行主类代码在构造函数里</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">// load the entry point class
+this.mainClass =
+        loadMainClass(
+                // if no entryPointClassName name was given, we try and look one up through
+                // the manifest
+                entryPointClassName != null
+                        ? entryPointClassName
+                        : getEntryPointClassNameFromJar(this.jarFile),
+                userCodeClassLoader);
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p><code>loadMainClass()</code> 函数代码中可以看到</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">ClassLoader contextCl = null;
+try {
+    contextCl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(cl);
+    // 通过反射加载上面的 mainClass
+    return Class.forName(className, false, cl);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>得到了 PackagedProgram ，下面就是 <code>executeProgram(effectiveConfiguration, program);</code></p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">// --------------------------------------------------------------------------------------------
+//  Interaction with programs and JobManager
+// 注释这里已经写了，用户程序和 jm 的交互
+// --------------------------------------------------------------------------------------------
+
+protected void executeProgram(final Configuration configuration, final PackagedProgram program)
+        throws ProgramInvocationException {
+    ClientUtils.executeProgram(
+            new DefaultExecutorServiceLoader(), configuration, program, false, false);
+            // new DefaultExecutorServiceLoader() 这就是 Executor 装载器， 用于执行后续的 program
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>创建和初始化<code>ExecutorServiceLoader</code>接口的实现类<code>DefaultExecutorServiceLoader</code>，加载客户端代码的<code>PipelineExecutor</code>。<code>PipelineExecutor</code>是客户端专门用于执行应用程序代码的执行器，不同类型的集群对应不同的<code>PipelineExecutor</code>实现类。</p>
+<p>接下来进入 <code>executeProgram()</code> 继续看逻辑</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">//通过ContextEnvironmentFactory创建和初始化ContextEnvironment。
+//ContextEnvironment是一种特殊的ExecutionEnvironment，仅在Flink Client中创建，专门用于通过命令行的方式提交作业。
+ContextEnvironment.setAsContext(
+    executorServiceLoader,
+    configuration,
+    userCodeClassLoader,
+    enforceSingleJobExecution,
+    suppressSysout);
+
+StreamContextEnvironment.setAsContext(
+    executorServiceLoader,
+    configuration,
+    userCodeClassLoader,
+    enforceSingleJobExecution,
+    suppressSysout);
+
+try {
+    program.invokeInteractiveModeForExecution();
+} finally {
+    ContextEnvironment.unsetAsContext();
+    StreamContextEnvironment.unsetAsContext();
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>在ContextEnvironment 和 StreamContextEnvironment 初始化完成后，ClientUtils会调用PackagedProgram.invokeInteractiveModeForExecution()方法。</p>
+<p>进入<code>invokeInteractiveModeForExecution()</code>继续看逻辑</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">callMainMethod(mainClass, args);
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这个函数做了一系列校验后，</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">mainMethod.invoke(null, (Object) args);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>通过反射的方式执行用户程序 (jar) 中的 <code>main()</code> 方法。</p>
+<h3 id="什么时候转换为-JobGraph-？"><a href="#什么时候转换为-JobGraph-？" class="headerlink" title="什么时候转换为 JobGraph ？"></a>什么时候转换为 JobGraph ？</h3><p>其实上述流程执行 <code>main()</code> 之前，<code>environment</code> 就已经准备好了，当执行用户程序的 <code>execute("Job name");</code>就会触发图的转换，最终提交给 JobManager，后面会单独一篇文章来写。</p>
 
                 
             </div>
@@ -441,7 +713,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://brucewong96.github.io/2021/06/28/yun-yuan-sheng-shu-ju-zhong-tai-du-shu-bi-ji/">https://brucewong96.github.io/2021/06/28/yun-yuan-sheng-shu-ju-zhong-tai-du-shu-bi-ji/</a>
+                    <a href="https://brucewong96.github.io/2021/10/26/flink-yuan-ma-pian-1-flink-1-12-ming-ling-xing-ti-jiao-job-shi-zen-me-zhi-xing-de/">https://brucewong96.github.io/2021/10/26/flink-yuan-ma-pian-1-flink-1-12-ming-ling-xing-ti-jiao-job-shi-zen-me-zhi-xing-de/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -478,7 +750,19 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/Flink/">
+                                    <span class="chip bg-color">Flink</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%BA%90%E7%A0%81/">
+                                    <span class="chip bg-color">源码</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/">
+                                    <span class="chip bg-color">实时计算</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -647,7 +931,7 @@
         repo: 'comment-by-gitalk',
         owner: 'BruceWong96',
         admin: "BruceWong96",
-        id: '2021-06-28T09-11-48',
+        id: '2021-10-26T22-41-14',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -675,49 +959,55 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/08/12/ji-yu-apache-spark-sql-de-jiao-hu-shi-cha-xun-zai-pinterest-de-shi-jian/">
+                <a href="/2021/10/26/flink-yuan-ma-pian-1-flink-1-12-ming-ling-xing-ti-jiao-job-shi-zen-me-zhi-xing-de/">
                     <div class="card-image">
                         
-                        <img src="https://gitee.com/brucewong96/picture0/raw/master/2021-8-12/1628739720821-architecture.png" class="responsive-img" alt="基于 Apache Spark SQL 的交互式查询在 Pinterest 的实践">
+                        <img src="https://gitee.com/brucewong96/picture0/raw/master/2021-10-26/1635259498061-image.png" class="responsive-img" alt="[Flink 源码篇-1] Flink 1.12 命令行提交 Job 是怎么执行的">
                         
-                        <span class="card-title">基于 Apache Spark SQL 的交互式查询在 Pinterest 的实践</span>
+                        <span class="card-title">[Flink 源码篇-1] Flink 1.12 命令行提交 Job 是怎么执行的</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            笔耕不辍。
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-08-12
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-26
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%A4%A7%E5%8E%82%E5%AE%9E%E8%B7%B5/" class="post-category">
-                                    大厂实践
+                            <a href="/categories/Flink-%E6%BA%90%E7%A0%81%E7%AF%87/" class="post-category">
+                                    Flink 源码篇
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Spark-SQL/">
-                        <span class="chip bg-color">Spark SQL</span>
+                    <a href="/tags/Flink/">
+                        <span class="chip bg-color">Flink</span>
                     </a>
                     
-                    <a href="/tags/%E4%BA%A4%E4%BA%92%E5%BC%8F%E6%9F%A5%E8%AF%A2/">
-                        <span class="chip bg-color">交互式查询</span>
+                    <a href="/tags/%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/">
+                        <span class="chip bg-color">实时计算</span>
                     </a>
                     
                 </div>
@@ -731,51 +1021,32 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/">
+                <a href="/2021/08/13/she-ji-mo-shi/">
                     <div class="card-image">
                         
-                        <img src="https://gitee.com/brucewong96/picture0/raw/master/2021-6-26/1624694497803-flink-home-graphic.png" class="responsive-img" alt="[Flink 实践篇-1] Flink 1.12.1 实现 WordCount 入门案例">
                         
-                        <span class="card-title">[Flink 实践篇-1] Flink 1.12.1 实现 WordCount 入门案例</span>
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        
+                        <span class="card-title"></span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            从 0 开始。
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-06-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-13
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Flink-%E5%AE%9E%E8%B7%B5%E7%AF%87/" class="post-category">
-                                    Flink 实践篇
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            程序员大魔王
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Flink/">
-                        <span class="chip bg-color">Flink</span>
-                    </a>
-                    
-                    <a href="/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/">
-                        <span class="chip bg-color">实时计算</span>
-                    </a>
-                    
-                    <a href="/tags/%E5%85%A5%E9%97%A8/">
-                        <span class="chip bg-color">入门</span>
-                    </a>
-                    
                 </div>
                 
             </div>
