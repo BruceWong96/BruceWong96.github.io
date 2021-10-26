@@ -6,7 +6,7 @@
   <link href="https://brucewong96.github.io/atom.xml" rel="self"/>
   
   <link href="https://brucewong96.github.io/"/>
-  <updated>2021-10-26T14:46:16.138Z</updated>
+  <updated>2021-10-26T14:49:38.268Z</updated>
   <id>https://brucewong96.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>[Flink 源码篇-1] Flink 1.12 命令行提交 Job 是怎么执行的</title>
-    <link href="https://brucewong96.github.io/2021/10/26/flink-yuan-ma-pian-1-flink-1-12-ming-ling-xing-ti-jiao-job-shi-zen-me-zhi-xing-de/"/>
-    <id>https://brucewong96.github.io/2021/10/26/flink-yuan-ma-pian-1-flink-1-12-ming-ling-xing-ti-jiao-job-shi-zen-me-zhi-xing-de/</id>
+    <title>[Flink 源码篇-1] Flink 1.12 命令行提交 Job 的流程解析</title>
+    <link href="https://brucewong96.github.io/2021/10/26/flink-yuan-ma-pian-1-flink-1-12-ming-ling-xing-ti-jiao-job-de-liu-cheng-jie-xi/"/>
+    <id>https://brucewong96.github.io/2021/10/26/flink-yuan-ma-pian-1-flink-1-12-ming-ling-xing-ti-jiao-job-de-liu-cheng-jie-xi/</id>
     <published>2021-10-26T14:41:14.000Z</published>
-    <updated>2021-10-26T14:46:16.138Z</updated>
+    <updated>2021-10-26T14:49:38.268Z</updated>
     
     
       
@@ -40,9 +40,9 @@
     
     <category term="Flink" scheme="https://brucewong96.github.io/tags/Flink/"/>
     
-    <category term="源码" scheme="https://brucewong96.github.io/tags/%E6%BA%90%E7%A0%81/"/>
-    
     <category term="实时计算" scheme="https://brucewong96.github.io/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
+    
+    <category term="源码" scheme="https://brucewong96.github.io/tags/%E6%BA%90%E7%A0%81/"/>
     
   </entry>
   
@@ -140,9 +140,9 @@
     
     <category term="Flink" scheme="https://brucewong96.github.io/tags/Flink/"/>
     
-    <category term="实时计算" scheme="https://brucewong96.github.io/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
-    
     <category term="入门" scheme="https://brucewong96.github.io/tags/%E5%85%A5%E9%97%A8/"/>
+    
+    <category term="实时计算" scheme="https://brucewong96.github.io/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
     
   </entry>
   
