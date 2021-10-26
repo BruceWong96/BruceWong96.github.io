@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>程序员大魔王</title>
+  
+  <subtitle>程序员大魔王</subtitle>
+  <link href="https://brucewong96.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://brucewong96.github.io/"/>
+  <updated>2021-08-18T05:20:59.043Z</updated>
+  <id>https://brucewong96.github.io/</id>
+  
+  <author>
+    <name>程序员大魔王</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="https://brucewong96.github.io/2021/08/18/java-xiang-ying-shi-kuang-jia-reactor-zhong-de-mono-he-flux/"/>
+    <id>https://brucewong96.github.io/2021/08/18/java-xiang-ying-shi-kuang-jia-reactor-zhong-de-mono-he-flux/</id>
+    <published>2021-08-18T05:20:55.550Z</published>
+    <updated>2021-08-18T05:20:59.043Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://brucewong96.github.io/2021/08/13/she-ji-mo-shi/"/>
+    <id>https://brucewong96.github.io/2021/08/13/she-ji-mo-shi/</id>
+    <published>2021-08-13T03:25:23.809Z</published>
+    <updated>2021-08-17T02:00:25.113Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h4 id=&quot;1-设计原则&quot;&gt;&lt;a href=&quot;#1-设计原则&quot; class=&quot;headerlink&quot; title=&quot;1. 设计原则&quot;&gt;&lt;/a&gt;1. 设计原则&lt;/h4&gt;&lt;h5 id=&quot;1-1-单一职责原则（SRP）&quot;&gt;&lt;a href=&quot;#1-1-单一职责原则（SRP）&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>基于 Apache Spark SQL 的交互式查询在 Pinterest 的实践</title>
+    <link href="https://brucewong96.github.io/2021/08/12/ji-yu-apache-spark-sql-de-jiao-hu-shi-cha-xun-zai-pinterest-de-shi-jian/"/>
+    <id>https://brucewong96.github.io/2021/08/12/ji-yu-apache-spark-sql-de-jiao-hu-shi-cha-xun-zai-pinterest-de-shi-jian/</id>
+    <published>2021-08-12T06:08:19.000Z</published>
+    <updated>2021-08-12T06:28:24.177Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本文作者：&lt;br&gt;Sanchay Javeria | Software Engineer, Big Data Query Platform, Data Engineering&lt;br&gt;Ashish Singh | Technical Lead,</summary>
+        
+      
+    
+    
+    
+    <category term="大厂实践" scheme="https://brucewong96.github.io/categories/%E5%A4%A7%E5%8E%82%E5%AE%9E%E8%B7%B5/"/>
+    
+    
+    <category term="Spark SQL" scheme="https://brucewong96.github.io/tags/Spark-SQL/"/>
+    
+    <category term="交互式查询" scheme="https://brucewong96.github.io/tags/%E4%BA%A4%E4%BA%92%E5%BC%8F%E6%9F%A5%E8%AF%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://brucewong96.github.io/2021/06/28/yun-yuan-sheng-shu-ju-zhong-tai-du-shu-bi-ji/"/>
+    <id>https://brucewong96.github.io/2021/06/28/yun-yuan-sheng-shu-ju-zhong-tai-du-shu-bi-ji/</id>
+    <published>2021-06-28T01:11:48.289Z</published>
+    <updated>2021-06-28T01:11:50.160Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;《云原生数据中台》读书笔记&quot;&gt;&lt;a href=&quot;#《云原生数据中台》读书笔记&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>[Flink 实践篇-1] Flink 1.12.1 实现 WordCount 入门案例</title>
+    <link href="https://brucewong96.github.io/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/"/>
+    <id>https://brucewong96.github.io/2021/06/26/flink-shi-jian-pian-1-flink-1-12-1-shi-xian-wordcount-ru-men-an-li/</id>
+    <published>2021-06-26T07:56:59.000Z</published>
+    <updated>2021-06-26T08:41:40.131Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;https://gitee.com/brucewong96/picture0/raw/master/2021-6-26/1624694497803-flink-home-graphic.png&quot; alt=&quot;Flink&quot;&gt;&lt;/p&gt;
+&lt;h4</summary>
+        
+      
+    
+    
+    
+    <category term="Flink 实践篇" scheme="https://brucewong96.github.io/categories/Flink-%E5%AE%9E%E8%B7%B5%E7%AF%87/"/>
+    
+    
+    <category term="Flink" scheme="https://brucewong96.github.io/tags/Flink/"/>
+    
+    <category term="入门" scheme="https://brucewong96.github.io/tags/%E5%85%A5%E9%97%A8/"/>
+    
+    <category term="实时计算" scheme="https://brucewong96.github.io/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
+    
+  </entry>
+  
+</feed>
