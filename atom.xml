@@ -6,7 +6,7 @@
   <link href="https://brucewong96.github.io/atom.xml" rel="self"/>
   
   <link href="https://brucewong96.github.io/"/>
-  <updated>2021-10-26T14:49:38.268Z</updated>
+  <updated>2021-11-01T11:50:40.249Z</updated>
   <id>https://brucewong96.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Flink-原理篇-1-Flink-架构和拓扑概览</title>
+    <link href="https://brucewong96.github.io/2021/11/01/flink-yuan-li-pian-1-flink-jia-gou-he-tuo-bu-gai-lan/"/>
+    <id>https://brucewong96.github.io/2021/11/01/flink-yuan-li-pian-1-flink-jia-gou-he-tuo-bu-gai-lan/</id>
+    <published>2021-11-01T11:47:15.000Z</published>
+    <updated>2021-11-01T11:50:40.249Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;架构&quot;&gt;&lt;a href=&quot;#架构&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Flink 原理篇" scheme="https://brucewong96.github.io/categories/Flink-%E5%8E%9F%E7%90%86%E7%AF%87/"/>
+    
+    
+    <category term="Flink" scheme="https://brucewong96.github.io/tags/Flink/"/>
+    
+    <category term="实时计算" scheme="https://brucewong96.github.io/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
+    
+  </entry>
   
   <entry>
     <title>[Flink 源码篇-1] Flink 1.12 命令行提交 Job 的流程解析</title>
@@ -140,9 +167,9 @@
     
     <category term="Flink" scheme="https://brucewong96.github.io/tags/Flink/"/>
     
-    <category term="入门" scheme="https://brucewong96.github.io/tags/%E5%85%A5%E9%97%A8/"/>
-    
     <category term="实时计算" scheme="https://brucewong96.github.io/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
+    
+    <category term="入门" scheme="https://brucewong96.github.io/tags/%E5%85%A5%E9%97%A8/"/>
     
   </entry>
   
