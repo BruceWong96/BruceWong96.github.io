@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Flink-原理篇-1-Flink-架构和拓扑概览, 程序员大魔王">
+    <meta name="keywords" content="数仓篇-1-实时数仓架构演进之路, 程序员大魔王">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Flink-原理篇-1-Flink-架构和拓扑概览 | 程序员大魔王</title>
+    <title>数仓篇-1-实时数仓架构演进之路 | 程序员大魔王</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -250,12 +250,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://gitee.com/brucewong96/picture0/raw/master/2021-11-1/1635766765275-flink-graph.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://gitee.com/brucewong96/picture0/raw/master/2021-11-2/1635853563224-image_5.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Flink-原理篇-1-Flink-架构和拓扑概览</h1>
+                    <h1 class="description center-align post-title">数仓篇-1-实时数仓架构演进之路</h1>
                 </div>
             </div>
         </div>
@@ -371,12 +371,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Flink/">
-                                <span class="chip bg-color">Flink</span>
+                            <a href="/tags/%E6%9E%B6%E6%9E%84/">
+                                <span class="chip bg-color">架构</span>
                             </a>
                         
-                            <a href="/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/">
-                                <span class="chip bg-color">实时计算</span>
+                            <a href="/tags/%E5%AE%9E%E6%97%B6%E6%95%B0%E4%BB%93/">
+                                <span class="chip bg-color">实时数仓</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%95%B0%E4%BB%93/">
+                                <span class="chip bg-color">数仓</span>
                             </a>
                         
                     </div>
@@ -387,8 +391,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Flink-%E5%8E%9F%E7%90%86%E7%AF%87/" class="post-category">
-                                Flink 原理篇
+                            <a href="/categories/%E6%95%B0%E4%BB%93%E7%AF%87/" class="post-category">
+                                数仓篇
                             </a>
                         
                     </div>
@@ -400,7 +404,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-11-01
+                    2021-11-02
                 </div>
                 
 
@@ -424,120 +428,52 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>了解一个系统，一般都是从架构开始。我们关心的是一个系统启动后，各个节点都启动了哪些服务，每个服务的作用是什么，各个服务之间是怎么交互和协调的。下方是 Flink 集群启动后的架构图。</p>
-<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-1/1635766724607-image.png" alt="Flink Architecture"></p>
-<p>当 Flink 集群启动后，会首先启动一个 JobManager 和 一个或多个 TaskManager 。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个 TaskManager 去执行，然后 TaskManager 将心跳和统计信息汇报给 JobManager。TaskManager 之间以流的形式进行数据的传输。上述三者均为独立的 JVM 进程。</p>
-<ul>
-<li><p>Client 为提交 Job 的客户端，可以是运行在任何机器上（只要与 JobManager 网络环境连通即可）。提交 Job 后，Client 可以结束进程（Streaming 的任务），也可以不结束并等待结果返回。</p>
-</li>
-<li><p>JobManager 主要负责调度 Job 并协调 Task 做 checkpoint，职责上很像 Storm 的 Nimbus。从 Client 处接收到 Job 和 Jar 包资源后，会生成优化后的执行计划，并以 Task 的单元调度到各个 TaskManager 去执行。</p>
-</li>
-<li><p>TaskManager 在启动的时候就设置好了槽位数（Slot），每个 slot 能启动一个 Task，Task 为线程。从 JobManager 处接收需要部署的 Task，部署启动后，与自己的上游建立 Netty 连接，接收数据并处理。</p>
-</li>
-</ul>
-<h2 id="组件详细介绍"><a href="#组件详细介绍" class="headerlink" title="组件详细介绍"></a>组件详细介绍</h2><h3 id="JobManager"><a href="#JobManager" class="headerlink" title="JobManager"></a>JobManager</h3><p><em>JobManager</em>  具有许多与协调 Flink 应用程序的分布式执行有关的职责：它决定何时调度下一个 task（或一组 task）、对完成的 task 或执行失败做出反应、协调 checkpoint、并且协调从失败中恢复等等。这个进程由三个不同的组件组成：</p>
-<ul>
-<li><strong>ResourceManager</strong> </li>
-</ul>
-<p>    - <em>ResourceManager</em>  负责 Flink 集群中的资源提供、回收、分配 - 它管理 <strong>task slots</strong> ，这是 Flink 集群中资源调度的单位。Flink 为不同的环境和资源提供者（例如 YARN、Kubernetes 和 standalone 部署）实现了对应的 ResourceManager。在 standalone 设置中，ResourceManager 只能分配可用 TaskManager 的 slots，而不能自行启动新的 TaskManager。</p>
-<ul>
-<li><strong>Dispatcher</strong> </li>
-</ul>
-<p>    - <em>Dispatcher</em>  提供了一个 REST 接口，用来提交 Flink 应用程序执行，并为每个提交的作业启动一个新的 JobMaster。它还运行 Flink WebUI 用来提供作业执行信息。</p>
-<ul>
-<li>JobMaster</li>
-</ul>
-<p>    - JobMaster 负责管理单个 JobGraph 的执行。Flink 集群中可以同时运行多个作业，每个作业都有自己的 JobMaster。</p>
-<p>至少有一个 JobManager。高可用（HA）设置中可能有多个 JobManager，其中一个始终是 leader，其他的则是 standby。</p>
-<h2 id="TaskManagers"><a href="#TaskManagers" class="headerlink" title="TaskManagers"></a>TaskManagers</h2><p>TaskManager（也称为 <em>worker</em> ）执行作业流的 task，并且缓存和交换数据流。</p>
-<p>必须始终至少有一个 TaskManager。在 TaskManager 中资源调度的最小单位是 task <em>slot</em> 。TaskManager 中 task slot 的数量表示并发处理 task 的数量。请注意一个 task slot 中可以执行多个算子（请参考<a target="_blank" rel="noopener" href="https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/concepts/flink-architecture/#tasks-and-operator-chains">Tasks 和算子链</a>）。</p>
-<h2 id="Job"><a href="#Job" class="headerlink" title="Job"></a>Job</h2><p>什么是 Flink Job ？官方术语解释如下：</p>
-<p>A Flink Job is the runtime representation of a <a target="_blank" rel="noopener" href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/concepts/glossary.html#logical-graph">logical graph</a> (also often called dataflow graph) that is created and submitted by calling <code>execute()</code> in a <a target="_blank" rel="noopener" href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/concepts/glossary.html#flink-application">Flink Application</a>.</p>
-<p>Flink Job 是一个逻辑图（也叫做数据流图）在运行时中的表示，在 Flink 应用中调用 execute() 函数时会创建并且提交 Flink Job。</p>
-<p>简单理解就是，我们写的业务代码都可以叫做 Flink Job。Flink 会把提交的 Job 解析成 Graph（图）来执行。</p>
-<h2 id="Graph"><a href="#Graph" class="headerlink" title="Graph"></a>Graph</h2><p>Flink 中的图可以分为如下四层：StreamGraph -&gt; JobGraph -&gt; ExecutionGraph -&gt; 物理执行图。</p>
-<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-1/1635766765275-flink-graph.png" alt="Flink Graph"></p>
-<h3 id="Stream-Graph"><a href="#Stream-Graph" class="headerlink" title="Stream Graph"></a>Stream Graph</h3><p>根据用户通过 Stream API 编写的代码生成的最初的图</p>
-<ul>
-<li><p>StreamNode：用来表示 operator 的类，并具有所有相关的属性，如并发度，入边和出边等。</p>
-</li>
-<li><p>StreamEdge：表示连接两个 StreamNode 的边</p>
-</li>
-</ul>
-<p>StremGraph 是可以查看的，比如平时我们写的业务代码如下：</p>
-<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">public static void main(String[] args) throws Exception {
-  // 检查输入
-  final ParameterTool params = ParameterTool.fromArgs(args);
-  ...
-
-  // set up the execution environment
-  final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
-  // get input data
-  DataStream&lt;String&gt; text =
-      env.socketTextStream(params.get("hostname"), params.getInt("port"), '\n', 0);
-
-  DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; counts =
-      // split up the lines in pairs (2-tuples) containing: (word,1)
-      text.flatMap(new Tokenizer())
-          // group by the tuple field "0" and sum up tuple field "1"
-          .keyBy(0)
-          .sum(1);
-  counts.print();
-  
-  // execute program
-  env.execute("WordCount from SocketTextStream Example");
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>把最后一行代码 <code>env.execute </code> 替换成 <code>System.out.println(env.getExecutionPlan());</code> 并在本地运行该代码（并发度设置为2 ），可以得到该拓扑结构的 StreamGraph 的 JSON 串，将该 JSON 串粘贴到 <a target="_blank" rel="noopener" href="http://flink.apache.org/visualizer/">http://flink.apache.org/visualizer/</a> 中，可以可视化该图，类似下面这样。</p>
-<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-1/1635766817275-image_1.png" alt="StreamGraph"></p>
-<h3 id="Job-Graph"><a href="#Job-Graph" class="headerlink" title="Job Graph"></a>Job Graph</h3><p>StreamGraph经过优化后生成了 JobGraph，提交给 JobManager 的数据结构。主要的优化为，将多个符合条件的节点 chain 在一起作为一个节点，这样可以减少数据在节点之间流动所需要的序列化/反序列化/传输消耗。</p>
-<ul>
-<li><p>JobVertex：经过优化后符合条件的多个 StreamNode 可能会 Chain 在一起生成一个 JobVertex，即一个 JobVertex 包含一个或多个 operator，JobVertex 的输入是 JobEdge，输出是 IntermediateDataSet。</p>
-</li>
-<li><p>IntermediateDataSet：表示 JobVertex 的输出，即经过 operator 处理产生的数据集。 producer 是 JobVertex，consumer 是 JobEdge。</p>
-</li>
-<li><p>JobEdge：代表了 job graph 中的一条数据传输通道，source 是 IntermediateDataSet，target 是 JobVertex。即数据通过 JobEdge 由 IntermediateDataSet 传递至目标 JobVertex。</p>
-</li>
-</ul>
-<p>JobGraph 也是可以查看的，我们在集群上的 WebUI 所看到的图就是 JobGraph，如下图。</p>
-<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-1/1635766836270-image_2.png" alt="JobGraph"></p>
-<h3 id="Execution-Graph"><a href="#Execution-Graph" class="headerlink" title="Execution Graph"></a><strong>Execution Graph</strong></h3><p>JobManager 根据 JobGraph 生成ExecutionGraph。ExecutionGraph是JobGraph的并行化版本，是调度层最核心的数据结构。JobManager 中的 JobMaster 就是根据 ExecutionGraph 来进行调度的。</p>
-<ul>
-<li><p>ExecutionJobVertex：和JobGraph中的JobVertex一一对应。每一个ExecutionJobVertex都有和并发度一样多的 ExecutionVertex。</p>
-</li>
-<li><p>ExecutionVertex：表示ExecutionJobVertex的其中一个并发子任务，输入是ExecutionEdge，输出是IntermediateResultPartition。</p>
-</li>
-<li><p>IntermediateResult：和JobGraph中的IntermediateDataSet一一对应。一个IntermediateResult包含多个IntermediateResultPartition，其个数等于该operator的并发度。</p>
-</li>
-<li><p>IntermediateResultPartition：表示ExecutionVertex的一个输出分区，producer是ExecutionVertex，consumer是若干个ExecutionEdge。</p>
-</li>
-<li><p>ExecutionEdge：表示ExecutionVertex的输入，source是IntermediateResultPartition，target是ExecutionVertex。source和target都只能是一个。</p>
-</li>
-<li><p>Execution：是执行一个 ExecutionVertex 的一次尝试。当发生故障或者数据需要重算的情况下 ExecutionVertex 可能会有多个 ExecutionAttemptID。一个 Execution 通过 ExecutionAttemptID 来唯一标识。JM和TM之间关于 task 的部署和 task status 的更新都是通过 ExecutionAttemptID 来确定消息接受者。</p>
-</li>
-</ul>
-<h3 id="Physical-Graph"><a href="#Physical-Graph" class="headerlink" title="Physical Graph"></a>Physical Graph</h3><p>JobManager 根据 ExecutionGraph 对 Job 进行调度后，在各个TaskManager 上部署 Task 后形成的“图”，并不是一个具体的数据结构（源码中没有这个类）。</p>
-<ul>
-<li><p>Task：Execution被调度后在分配的 TaskManager 中启动对应的 Task。Task 包裹了具有用户执行逻辑的 operator。</p>
-</li>
-<li><p>ResultPartition：代表由一个Task的生成的数据，和ExecutionGraph中的IntermediateResultPartition一一对应。</p>
-</li>
-<li><p>ResultSubpartition：是ResultPartition的一个子分区。每个ResultPartition包含多个ResultSubpartition，其数目要由下游消费 Task 数和 DistributionPattern 来决定。</p>
-</li>
-<li><p>InputGate：代表Task的输入封装，和JobGraph中JobEdge一一对应。每个InputGate消费了一个或多个的ResultPartition。</p>
-</li>
-<li><p>InputChannel：每个InputGate会包含一个以上的InputChannel，和ExecutionGraph中的ExecutionEdge一一对应，也和ResultSubpartition一对一地相连，即一个InputChannel接收一个ResultSubpartition的输出。</p>
-</li>
-</ul>
-<hr>
-<p>具体四张图的流程可以看下图</p>
-<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-1/1635766869755-image_3.png" alt="Flink Graph"></p>
-<p>那么 Flink 为什么要设计这4张图呢，其目的是什么呢？Spark 中也有多张图，数据依赖图以及物理执行的DAG。其目的都是一样的，就是解耦，每张图各司其职。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="http://wuchong.me/blog/2016/05/03/flink-internals-overview/">http://wuchong.me/blog/2016/05/03/flink-internals-overview/</a></p>
-<p><a target="_blank" rel="noopener" href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/concepts/glossary.html">https://ci.apache.org/projects/flink/flink-docs-release-1.12/concepts/glossary.html</a></p>
-<p><a target="_blank" rel="noopener" href="https://nightlies.apache.org/flink/flink-docs-release-1.14/docs/concepts/flink-architecture/">https://nightlies.apache.org/flink/flink-docs-release-1.14/docs/concepts/flink-architecture/</a></p>
+                <h1 id="实时数仓架构演进之路"><a href="#实时数仓架构演进之路" class="headerlink" title="实时数仓架构演进之路"></a>实时数仓架构演进之路</h1><h2 id="大数据处理现状"><a href="#大数据处理现状" class="headerlink" title="大数据处理现状"></a>大数据处理现状</h2><p>当前基于 Hive 的离线数据仓库已经非常成熟稳定，数据中台体系也基本上围绕离线数仓进行建设。但是随着实时计算引擎的不断发展以及业务对于实时报表的产出需求不断膨胀，业界最近几年就一直聚焦并探索与两个相关的热点问题：实时数仓建设和大数据架构的批流一体建设。</p>
+<h2 id="实时数仓1-0"><a href="#实时数仓1-0" class="headerlink" title="实时数仓1.0"></a>实时数仓1.0</h2><p>传统意义上我们通常将数据处理分为实时数据处理和离线数据处理。对于实时处理场景，我们一般又可以分为两类，一类诸如监控告警类、大屏展示类场景要求秒级甚至亚秒级；另一类诸如大部分实时报表的需求通常没有非常高的时效性要求，一般分钟级别，比如10分钟甚至30分钟以内都可以接受。</p>
+<p>对于第一类实时数据场景来说，业界通常的做法比较简单粗暴，一般也不需要非常仔细地进行数据分层，数据直接通过 Flink 计算或者聚合之后将结果写入 MySQL/ES/HBase/Druid/Kudu 等，直接提供应用查询或者多维分析。如下所示：</p>
+<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-2/1635853428370-image.png" alt="实时数仓 0.0"></p>
+<p>而对于后者来说，通常做法会按照数仓结构进行设计，我们称后者这种应用场景为<strong>实时数仓</strong> ，将作为本篇文章讨论的重点。从业界情况来看，当前主流的实时数仓架构基本都是基于Kafka+Flink的架构（为了行文方便，就称为实时数仓1.0）。下图是基于业界各大公司分享的实时数仓架构抽象的一个方案：</p>
+<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-2/1635853462518-image_1.png" alt="实时数仓 1.0"></p>
+<p>这套架构总体依然遵循标准的数仓分层结构，各种数据首先汇聚于 ODS 数据接入层。再接着经过这些来源明细数据的数据清洗、过滤等操作，完成多来源同类明细数据的融合，形成面向业务主题的DWD数据明细层。在此基础上进行轻度的汇总操作，形成一定程度上方便查询的DWS轻度汇总层（注：这里没有画出DIM维度层，一般选型为Redis/HBase，下文架构图中同样没有画出DIM维度层，在此说明）。最后再面向业务需求，在DWS层基础上进一步对数据进行组织进入ADS数据应用层，业务在数据应用层的基础上支持用户画像、用户报表等业务场景。</p>
+<p>基于Kafka+Flink的这套架构方案很好的解决了实时数仓对于时效性的业务诉求，通常延迟可以做到秒级甚至更短。基于上图所示实时数仓架构方案，笔者整理了一个目前业界比较主流的整体数仓架构方案：</p>
+<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-2/1635853481195-image_2.png" alt="业界整体数仓"></p>
+<p>上图中上层链路是离线数仓数据流转链路，下层链路是实时数仓数据流转链路，当然实际情况可能是很多公司在实时数仓建设中并没有严格按照数仓分层结构进行分层，与上图稍有不同。</p>
+<p>然而基于Kafka+Flink的实时数仓方案有几个非常明显的缺陷：</p>
+<p>（1）Kafka无法支持海量数据存储。对于海量数据量的业务线来说，Kafka一般只能存储非常短时间的数据，比如最近一周，甚至最近一天；</p>
+<p>（2）Kafka无法支持高效的OLAP查询。大多数业务都希望能在DWD\DWS层支持即席查询的，但是Kafka无法非常友好地支持这样的需求；</p>
+<p>（3）无法复用目前已经非常成熟的基于离线数仓的数据血缘、数据质量管理体系。需要重新实现一套数据血缘、数据质量管理体系；</p>
+<p>（4）Lambad架构维护成本很高。很显然，这种架构下数据存在两份、schema不统一、 数据处理逻辑不统一，整个数仓系统维护成本很高；</p>
+<p>（5）Kafka不支持update/upsert。目前Kafka仅支持append。实际场景中在DWS轻度汇聚层很多时候是需要更新的，DWD明细层到DWS轻度汇聚层一般会根据时间粒度以及维度进行一定的聚合，用于减少数据量，提升查询性能。假如原始数据是秒级数据，聚合窗口是1分钟，那就有可能产生某些延迟的数据经过时间窗口聚合之后需要更新之前数据的需求。这部分更新需求无法使用Kafka实现。</p>
+<blockquote>
+<p>注意：第 (5) 点 Flink 1.12 官方提供了 upsert-kafka connector 具体实现可以看 <a target="_blank" rel="noopener" href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/dev/table/connectors/upsert-kafka.html">官网</a>，这篇文章在写的时候可能还没有，保留是为了解释 upsert-kafka 的必要性。</p>
+</blockquote>
+<p>所以实时数仓发展到现在的架构，一定程度上解决了数据报表时效性问题，但是这样的架构依然存在不少问题，随着技术的发展，相信基于Kafka+Flink的实时数仓架构也会进一步往前发展。那会往哪里发展呢？</p>
+<p><strong>大数据架构的批流一体建设。</strong> </p>
+<p>带着上面的问题我们再来接着聊一聊最近一两年和实时数仓一样很火的另一个概念：批流一体。对于批流一体的理解，笔者发现有很多种解读，比如有些业界前辈认为批和流在开发层面上都统一到相同的SQL上是批流一体，又有些前辈认为在计算引擎层面上批和流可以集成在同一个计算引擎是批流一体，比如Spark/Spark Structured Streaming就算一个在计算引擎层面实现了批流一体的计算框架，与此同时另一个计算引擎Flink，目前在流处理方面已经做了很多的工作而且在业界得到了普遍的认可，但在批处理方面还有一定的路要走。</p>
+<h2 id="实时数仓2-0"><a href="#实时数仓2-0" class="headerlink" title="实时数仓2.0"></a>实时数仓2.0</h2><p>笔者认为无论是业务SQL使用上的统一还是计算引擎上的统一，都是批流一体的一个方面。除此之外，批流一体还有一个最核心的方面，那就是存储层面上的统一。在这个方面业界也有一些走在前面的技术，比如最近一段时间开始流行起来的数据湖三剑客– delta/hudi/iceberg，就在往这个方向走。存储一旦能够做到统一，上述数据仓库架构就会变成如下模样（以Iceberg数据湖作为统一存储为例），称为实时数仓2.0：</p>
+<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-2/1635853531630-image_3.png" alt="实时数仓 2.0"></p>
+<p>这套架构中无论是流处理还是批处理，数据存储都统一到数据湖Iceberg上。那这么一套架构将存储统一后有什么好处呢？很明显，可以解决Kafka+Flink架构实时数仓存在的前面4个问题：</p>
+<p>（1）可以解决Kafka存储数据量少的问题。目前所有数据湖基本思路都是基于HDFS之上实现的一个文件管理系统，所以数据体量可以很大。</p>
+<p>（2）DW层数据依然可以支持OLAP查询。同样数据湖基于HDFS之上实现，只需要当前的OLAP查询引擎做一些适配就可以进行OLAP查询。</p>
+<p>（3）批流存储都基于Iceberg/HDFS存储之后，就完全可以复用一套相同的数据血缘、数据质量管理体系。</p>
+<p>（4）Kappa架构相比Lambad架构来说，schema统一，数据处理逻辑统一，用户不再需要维护两份数据。</p>
+<p>有的同学说了，这不，你直接解决了前4个问题嘛，还有第5个问题呢？对，第5个问题下文会讲到。</p>
+<p>又有的同学会说了，上述架构确实解决了Lambad架构的诸多问题，但是这套架构看起来就像是一条离线处理链路，它是怎么做到报表实时产出呢？确实，上述架构图主要将离线处理链路上的HDFS换成了数据湖Iceberg，就号称可以实现实时数仓，听起来容易让人迷糊。这里的关键就是数据湖Iceberg，它到底有什么魔力？</p>
+<p>为了回答这个问题，笔者就上述架构以及数据湖技术本身做一个简单的介绍（接下来也会基于Iceberg出一个专题深入介绍数据湖技术）。上述架构图中有两条数据处理链路，一条是基于Flink的实时数据链路，一条是基于Spark的离线数据链路。通常数据都是直接走实时链路处理，而离线链路则更多的应用于数据修正等非常规场景。这样的架构要成为一个可以落地的实时数仓方案，数据湖Iceberg是需要满足如下几个要求的：</p>
+<p>（1）支持流式写入-增量拉取。流式写入其实现在基于Flink就可以实现，无非是将checkpoint间隔设置的短一点，比如1分钟，就意味每分钟生成的文件就可以写入到HDFS，这就是流式写入。没错，但是这里有两个问题，第一个问题是小文件很多，但这不是最关键的，第二个问题才是最致命的，就是上游每分钟提交了很多文件到HDFS上，下游消费的Flink是不知道哪些文件是最新提交的，因此下游Flink就不知道应该去消费处理哪些文件。这个问题才是离线数仓做不到实时的最关键原因之一，离线数仓的玩法是说上游将数据全部导入完成了，告诉下游说这波数据全部导完了，你可以消费处理了，这样的话就做不到实时处理。</p>
+<p>数据湖就解决了这个问题。实时数据链路处理的时候上游Flink写入的文件进来之后，下游就可以将数据文件一致性地读走。这里强调一致性地读，就是不能多读一个文件也不能少读一个文件。上游这段时间写了多少文件，下游就要读走多少文件。我们称这样的读取叫增量拉取。</p>
+<p>（2）解决小文件多的问题，数据湖实现了相关合并小文件的接口，Spark/Flink上层引擎可以周期性地调用接口进行小文件合并。</p>
+<p>（3）支持批量以及流式的Upsert(Delete)功能。批量Upsert/Delete功能主要用于离线数据修正。流式upsert场景上文介绍了，主要是流处理场景下经过窗口时间聚合之后有延迟数据到来的话会有更新的需求。这类需求是需要一个可以支持更新的存储系统的，而离线数仓做更新的话需要全量数据覆盖，这也是离线数仓做不到实时的关键原因之一，数据湖是需要解决掉这个问题的。</p>
+<p>（4）支持比较完整的OLAP生态。比如支持Hive/Spark/Presto/Impala等OLAP查询引擎，提供高效的多维聚合查询性能。</p>
+<p>这里需要备注一点，目前Iceberg部分功能还在开发中。具体技术层面Iceberg是怎么解决上述问题的，还需要持续关注社区。</p>
+<h2 id="实时数仓3-0"><a href="#实时数仓3-0" class="headerlink" title="实时数仓3.0"></a>实时数仓3.0</h2><p>按照批流一体上面的探讨，如果计算引擎做到了批流一体的统一，就可以做到SQL统一、计算统一以及存储统一，这时就迈入实时数仓3.0时代。对于以Spark为核心技术栈的公司来说，实时数仓2.0的到来就意味着3.0的到来，因为在计算引擎层面Spark早已做到批流一体。基于Spark/数据湖的3.0架构如下图：</p>
+<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-2/1635853556445-image_4.png" alt="实时数仓 3.0 Spark"></p>
+<p>假如未来Flink在批处理领域成熟到一定程度，基于Flink 数据湖的3.0架构如下图：</p>
+<p><img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-2/1635853563224-image_5.png" alt="实时数仓 3.0 Flink"></p>
+<p>上面所介绍的，是笔者认为接下来几年数据仓库发展的一个可能路径。对于业界目前实时数仓的一个发展预估，个人觉得目前业界大多公司都还往实时数仓1.0这个架构上靠；而在接下来1到2年时间随着数据湖技术的成熟，实时数仓2.0架构会成为越来越多公司的选择，其实到了2.0时代之后，业务同学最关心的报表实时性诉求和大数据平台同学最关心的数据存储一份诉求都可以解决；随着计算引擎的成熟，实时数仓3.0可能和实时数仓2.0一起或者略微滞后一些普及。</p>
+<p>计算、存储、分析一直是实时数仓发展的基石。</p>
+<h2 id="作者简介"><a href="#作者简介" class="headerlink" title="作者简介"></a>作者简介</h2><p>子和，网易大数据开发工程师，长期从事分布式KV数据库、分布式时序数据库以及大数据底层组件等相关工作。</p>
+<p>本文参考：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/lt7KZ_vs_RsI9VTV89TusQ#at">https://mp.weixin.qq.com/s/lt7KZ_vs_RsI9VTV89TusQ#at</a></p>
 
                 
             </div>
@@ -564,7 +500,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://brucewong96.github.io/2021/11/01/flink-yuan-li-pian-1-flink-jia-gou-he-tuo-bu-gai-lan/">https://brucewong96.github.io/2021/11/01/flink-yuan-li-pian-1-flink-jia-gou-he-tuo-bu-gai-lan/</a>
+                    <a href="https://brucewong96.github.io/2021/11/02/shu-cang-pian-1-shi-shi-shu-cang-jia-gou-yan-jin-zhi-lu/">https://brucewong96.github.io/2021/11/02/shu-cang-pian-1-shi-shi-shu-cang-jia-gou-yan-jin-zhi-lu/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -602,12 +538,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Flink/">
-                                    <span class="chip bg-color">Flink</span>
+                                <a href="/tags/%E6%9E%B6%E6%9E%84/">
+                                    <span class="chip bg-color">架构</span>
                                 </a>
                             
-                                <a href="/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/">
-                                    <span class="chip bg-color">实时计算</span>
+                                <a href="/tags/%E5%AE%9E%E6%97%B6%E6%95%B0%E4%BB%93/">
+                                    <span class="chip bg-color">实时数仓</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%95%B0%E4%BB%93/">
+                                    <span class="chip bg-color">数仓</span>
                                 </a>
                             
                         </div>
@@ -778,7 +718,7 @@
         repo: 'comment-by-gitalk',
         owner: 'BruceWong96',
         admin: "BruceWong96",
-        id: '2021-11-01T19-47-15',
+        id: '2021-11-02T19-47-29',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -806,9 +746,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/11/02/shu-cang-pian-1-shi-shi-shu-cang-jia-gou-yan-jin-zhi-lu/">
                     <div class="card-image">
@@ -825,9 +766,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-02
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-02
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -840,6 +781,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -866,30 +808,30 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/10/26/flink-yuan-ma-pian-1-flink-1-12-ming-ling-xing-ti-jiao-job-de-liu-cheng-jie-xi/">
+                <a href="/2021/11/01/flink-yuan-li-pian-1-flink-jia-gou-he-tuo-bu-gai-lan/">
                     <div class="card-image">
                         
-                        <img src="https://gitee.com/brucewong96/picture0/raw/master/2021-10-26/1635259498061-image.png" class="responsive-img" alt="[Flink 源码篇-1] Flink 1.12 命令行提交 Job 的流程解析">
+                        <img src="https://gitee.com/brucewong96/picture0/raw/master/2021-11-1/1635766765275-flink-graph.png" class="responsive-img" alt="Flink-原理篇-1-Flink-架构和拓扑概览">
                         
-                        <span class="card-title">[Flink 源码篇-1] Flink 1.12 命令行提交 Job 的流程解析</span>
+                        <span class="card-title">Flink-原理篇-1-Flink-架构和拓扑概览</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            笔耕不辍。
+                            日拱一卒。
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-01
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Flink-%E6%BA%90%E7%A0%81%E7%AF%87/" class="post-category">
-                                    Flink 源码篇
+                            <a href="/categories/Flink-%E5%8E%9F%E7%90%86%E7%AF%87/" class="post-category">
+                                    Flink 原理篇
                                 </a>
                             
                             
@@ -905,10 +847,6 @@
                     
                     <a href="/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/">
                         <span class="chip bg-color">实时计算</span>
-                    </a>
-                    
-                    <a href="/tags/%E6%BA%90%E7%A0%81/">
-                        <span class="chip bg-color">源码</span>
                     </a>
                     
                 </div>
